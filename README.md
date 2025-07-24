@@ -5,7 +5,7 @@ sh*tty terminal chat server
 run ``` REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1``` in your terminal to enable ansi 
 
 
-## Use
+## Usage
 For server:
 ``` python3 serv.py```
 Connect to server:
