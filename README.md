@@ -10,3 +10,5 @@ For server:
 ``` python3 serv.py```
 Connect to server:
 ``` telnet {ip address} {port}``` OR ```nc {ip address} {port}``` 
+## Port Forwarding
+Use intermediary service like ngrok
