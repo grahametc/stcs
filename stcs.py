@@ -32,9 +32,7 @@ class Server:
     def new_con(self, i):
         latest_usr = self.connections[len(self.connections)-1][2]
         if len(self.connections) > i:
-            #st = addr[0] + " " + str(addr[1]) + " is connected"
-            spacing = " " * (20 - len(latest_usr))
-            st = "\033[0;36m" + latest_usr.strip() + " has connected." +spacing+ self.get_utc() + "\033[0m\n"
+            st = "\033[0;36m("+self.get_utc() +") "+ latest_usr.strip() + " has connected.\033[0m\n"
             print(st)
             self.send2_clients(st)
             print("\033[0m")
@@ -82,7 +80,7 @@ class Server:
     
 
     def cmnd(self, inp):
-        help = "------------------------------------------\n/kill  -  Shut down server \n/kick [user]  -  remove user from server\n/users  -  returns number and list of users\n/blacklist [ip] - blacklist ip from server\n------------------------------------------\n "
+        help = "\033[0;36m----------------Command------------------\033[0m\n/kill  -  Shut down server \n/kick [user]  -  remove user from server\n/users  -  returns number and list of users\n/blacklist [ip] - blacklist ip from server\n\033[0;36m------------------------------------------\033[0m\n "
         inp=inp.strip()
         if(inp == "/kill"):
             self.kill()
@@ -115,7 +113,7 @@ class Server:
             inp = input()
             if(self.cmnd(inp)): break
             if inp.find("/")==0: pass
-            else: self.send2_clients("host >>> "+inp+"\n")
+            else: self.send2_clients("\033[0;36m(" +  self.get_utc() + ") \033[0m"+"host >>> "+inp+"\n")
             
     def sanitize(self, data):
         d=data
@@ -149,7 +147,7 @@ class Server:
                     con.close()
                     self.remove_client(con)
                     break
-                message =  user.strip() + " >>> " + data.strip() +"\n"
+                message =  "\033[0;36m(" +  self.get_utc() + ") \033[0m" + user.strip() + " >>> " + data.strip() +"\n"
                 print(message)
                 for j in range(0, len(self.connections)):
                     if self.connections[j][0] != con:
@@ -163,6 +161,11 @@ class Server:
         data = data[0:16]
         bs=re.findall(r"\w", data)
         if not bs: return addr.strip()
+        for conn in self.connections:
+            if(conn[2]==data): 
+                err="\033[0;31musername taken. you will be "+str(self.connections[0][1][1])+"\033[0m\n"
+                con.send(err.encode("UTF-8"))
+                return str(self.connections[0][1][1]).strip()
         return data
     
     def passwd(self,pw, con):
